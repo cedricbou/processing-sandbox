@@ -45,11 +45,9 @@ public class App extends PApplet {
         background(64, 50);
 
         ball.update(delta);
-        fill(800);
-        ellipse(ball.getPosition().x, ball.getPosition().y, ball.getRadius(), ball.getRadius());
+        ball.draw(this);
 
         colorMode(HSB, 1024);
-
         stroke(hue, 500, 500);
         noFill();
         strokeWeight(4.0f);

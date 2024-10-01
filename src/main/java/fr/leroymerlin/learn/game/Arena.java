@@ -41,19 +41,19 @@ public class Arena {
     }
 
     public boolean collidesTopWall(Collider<? extends Box> collider) {
-        return BoxMaths.insersect(collider.getBox(), topWall);
+        return BoxMaths.intersect(collider.getBox(), topWall);
     }
 
     public boolean collidesBottomWall(Collider<? extends Box> collider) {
-        return BoxMaths.insersect(collider.getBox(), bottomWall);
+        return BoxMaths.intersect(collider.getBox(), bottomWall);
     }
 
     public boolean collidesLeftWall(Collider<? extends Box> collider) {
-        return BoxMaths.insersect(collider.getBox(), leftWall);
+        return BoxMaths.intersect(collider.getBox(), leftWall);
     }
 
     public boolean collidesRightWall(Collider<? extends Box> collider) {
-        return BoxMaths.insersect(collider.getBox(), rightWall);
+        return BoxMaths.intersect(collider.getBox(), rightWall);
     }
 
     public float getWidth() {

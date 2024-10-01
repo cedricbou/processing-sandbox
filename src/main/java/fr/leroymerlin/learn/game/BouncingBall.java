@@ -1,13 +1,18 @@
 package fr.leroymerlin.learn.game;
 
 import fr.leroymerlin.learn.common.Actor;
+import fr.leroymerlin.learn.common.Drawable;
 import fr.leroymerlin.learn.common.collision.Collider;
 import fr.leroymerlin.learn.common.collision.boxes.CircleBox;
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PVector;
 
-public class BouncingBall implements Actor, Collider<CircleBox> {
+public class BouncingBall implements Actor, Collider<CircleBox>, Drawable {
 
     private final float radius;
+    private final float diameter;
     private final Arena arena;
 
     private final PVector position;
@@ -15,11 +20,15 @@ public class BouncingBall implements Actor, Collider<CircleBox> {
 
     private final CircleBox box;
 
+    private final static int[] colorHues = { 800, 200, 400, 600 };
+    private int colorHueIndex = 0;
+
     public BouncingBall(Arena arena, PVector position, PVector velocity, float radius) {
         this.arena = arena;
         this.position = position;
         this.velocity = velocity;
         this.radius = radius;
+        this.diameter = radius * 2;
         this.box = new CircleBox(position, radius);
     }
 
@@ -28,12 +37,21 @@ public class BouncingBall implements Actor, Collider<CircleBox> {
         position.add(velocity.x * delta, velocity.y * delta);
 
         if( arena.collidesBottomWall(this) || arena.collidesTopWall(this) ) {
+            this.changeColorHue();
             velocity.y *= -1;
         }
 
         if( arena.collidesLeftWall(this) || arena.collidesRightWall(this) ) {
+            this.changeColorHue();
             velocity.x *= -1;
         }
+    }
+
+    @Override
+    public void draw(PApplet P) {
+        P.colorMode(PConstants.HSB, 1024);
+        P.fill(colorHues[colorHueIndex], 512, 512);
+        P.ellipse(position.x, position.y, diameter, diameter);
     }
 
     @Override
@@ -47,5 +65,10 @@ public class BouncingBall implements Actor, Collider<CircleBox> {
 
     public float getRadius() {
         return radius;
+    }
+
+    private void changeColorHue() {
+        colorHueIndex++;
+        colorHueIndex %= colorHues.length;
     }
 }

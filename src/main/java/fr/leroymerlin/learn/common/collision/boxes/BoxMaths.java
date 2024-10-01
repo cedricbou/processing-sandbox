@@ -21,16 +21,13 @@ public class BoxMaths {
         return PApplet.sqrt(PApplet.sq(x - a.getPosition().x) + PApplet.sq(y - a.getPosition().y)) < a.getRadius();
     }
 
-    public static <A extends Box, B extends Box> boolean insersect(A a, B b) {
-        if (a instanceof CircleBox && b instanceof CircleBox) {
-            return intersect((CircleBox) a, (CircleBox) b);
-        } else if (a instanceof CircleBox && b instanceof RectBox) {
-            return intersect((CircleBox) a, (RectBox) b);
-        } else if (a instanceof RectBox && b instanceof CircleBox) {
-            return intersect((CircleBox) b, (RectBox) a);
-        } else {
-            return false;
-        }
+    public static <A extends Box, B extends Box> boolean intersect(A a, B b) {
+        return switch (a) {
+            case CircleBox circleBox when b instanceof CircleBox -> intersect(circleBox, (CircleBox) b);
+            case CircleBox circleBox when b instanceof RectBox -> intersect(circleBox, (RectBox) b);
+            case RectBox rectBox when b instanceof CircleBox -> intersect((CircleBox) b, rectBox);
+            case null, default -> false;
+        };
     }
 
 }

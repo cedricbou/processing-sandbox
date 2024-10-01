@@ -16,7 +16,6 @@ public class Clock {
     }
 
     public float delta() {
-        float delta = (-previousTime + (previousTime = P.millis())) / 1000.f;
-        return delta;
+        return (-previousTime + (previousTime = P.millis())) / 1000.f;
     }
 }
