@@ -6,12 +6,10 @@ import fr.leroymerlin.learn.common.collision.Collider;
 import fr.leroymerlin.learn.common.collision.boxes.CircleBox;
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PGraphics;
 import processing.core.PVector;
 
 public class BouncingBall implements Actor, Collider<CircleBox>, Drawable {
 
-    private final float radius;
     private final float diameter;
     private final Arena arena;
 
@@ -27,7 +25,6 @@ public class BouncingBall implements Actor, Collider<CircleBox>, Drawable {
         this.arena = arena;
         this.position = position;
         this.velocity = velocity;
-        this.radius = radius;
         this.diameter = radius * 2;
         this.box = new CircleBox(position, radius);
     }
@@ -61,10 +58,6 @@ public class BouncingBall implements Actor, Collider<CircleBox>, Drawable {
 
     public PVector getPosition() {
         return position;
-    }
-
-    public float getRadius() {
-        return radius;
     }
 
     private void changeColorHue() {

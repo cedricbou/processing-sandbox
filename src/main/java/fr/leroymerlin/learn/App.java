@@ -11,14 +11,17 @@ import processing.core.PVector;
  */
 public class App extends PApplet {
 
-    public static final float BALL_SPEED = 40.f;
+    public static final float BALL_SPEED = 120.f;
 
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
 
-    private int hue = 300;
+    private float offset_center_x;
+    private float offset_center_y;
+
     private final Clock clock = new Clock(this);
     private final Arena arena = new Arena((float)WIDTH, (float)HEIGHT);
+
     private final BouncingBall ball = new BouncingBall(
         arena,
         new PVector(200, 200),
@@ -28,11 +31,18 @@ public class App extends PApplet {
     @Override
     public void settings() {
         size(WIDTH, HEIGHT);
+        offset_center_x = width / 2.0f;
+        offset_center_y = height / 2.0f;
         clock.start();
     }
 
+
+
     @Override
     public void draw() {
+        pushMatrix();
+        translate(offset_center_x, offset_center_y);
+
         if(keyPressed) {
             stop();
             exit();
@@ -42,20 +52,13 @@ public class App extends PApplet {
         colorMode(RGB, 1024);
         noStroke();
 
-        background(64, 50);
+        background(128);
 
         ball.update(delta);
         ball.draw(this);
+        arena.draw(this);
 
-        colorMode(HSB, 1024);
-        stroke(hue, 500, 500);
-        noFill();
-        strokeWeight(4.0f);
-        rectMode(CORNERS);
-        rect(0, 0, arena.getWidth() - 4, arena.getHeight() - 4);
-
-        hue += 1;
-        hue %= 1024;
+        popMatrix();
     }
     public static void main(String[] args) {
         String[] appletArgs = new String[] { "fr.leroymerlin.learn.App" };
