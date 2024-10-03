@@ -12,6 +12,7 @@ public class BouncingBall implements Actor, Collider<CircleBox>, Drawable {
 
     private final float diameter;
     private final Arena arena;
+    private final Pad[] pads;
 
     private final PVector position;
     private final PVector velocity;
@@ -21,12 +22,13 @@ public class BouncingBall implements Actor, Collider<CircleBox>, Drawable {
     private final static int[] colorHues = { 800, 200, 400, 600 };
     private int colorHueIndex = 0;
 
-    public BouncingBall(Arena arena, PVector position, PVector velocity, float radius) {
+    public BouncingBall(Arena arena, PVector position, PVector velocity, float radius, Pad player, Pad opponent) {
         this.arena = arena;
         this.position = position;
         this.velocity = velocity;
         this.diameter = radius * 2;
         this.box = new CircleBox(position, radius);
+        this.pads = new Pad[] { player, opponent };
     }
 
     @Override
@@ -41,6 +43,12 @@ public class BouncingBall implements Actor, Collider<CircleBox>, Drawable {
         if( arena.collidesLeftWall(this) || arena.collidesRightWall(this) ) {
             this.changeColorHue();
             velocity.x *= -1;
+        }
+
+        for( Pad pad : this.pads ) {
+            if( this.collides(pad) ) {
+                this.changeColorHue();
+            }
         }
     }
 

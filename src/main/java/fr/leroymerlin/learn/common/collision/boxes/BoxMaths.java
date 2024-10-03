@@ -21,11 +21,22 @@ public class BoxMaths {
         return PApplet.sqrt(PApplet.sq(x - a.getPosition().x) + PApplet.sq(y - a.getPosition().y)) < a.getRadius();
     }
 
+    /*
+     * Intersection between two rectangles
+     */
+    public static boolean intersect(RectBox a, RectBox b) {
+        return a.getCenter().x - a.getSize().x / 2 < b.getCenter().x + b.getSize().x / 2 &&
+                a.getCenter().x + a.getSize().x / 2 > b.getCenter().x - b.getSize().x / 2 &&
+                a.getCenter().y - a.getSize().y / 2 < b.getCenter().y + b.getSize().y / 2 &&
+                a.getCenter().y + a.getSize().y / 2 > b.getCenter().y - b.getSize().y / 2;
+    }
+
     public static <A extends Box, B extends Box> boolean intersect(A a, B b) {
         return switch (a) {
             case CircleBox circleBox when b instanceof CircleBox -> intersect(circleBox, (CircleBox) b);
             case CircleBox circleBox when b instanceof RectBox -> intersect(circleBox, (RectBox) b);
             case RectBox rectBox when b instanceof CircleBox -> intersect((CircleBox) b, rectBox);
+            case RectBox rectBox when b instanceof RectBox -> intersect(rectBox, (RectBox) b);
             case null, default -> false;
         };
     }

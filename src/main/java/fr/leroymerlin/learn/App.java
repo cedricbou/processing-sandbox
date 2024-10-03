@@ -3,7 +3,9 @@ package fr.leroymerlin.learn;
 import fr.leroymerlin.learn.common.Clock;
 import fr.leroymerlin.learn.game.Arena;
 import fr.leroymerlin.learn.game.BouncingBall;
+import fr.leroymerlin.learn.game.Pad;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PVector;
 
 /**
@@ -21,12 +23,27 @@ public class App extends PApplet {
 
     private final Clock clock = new Clock(this);
     private final Arena arena = new Arena((float)WIDTH, (float)HEIGHT);
+    private final Pad player = new Pad(
+            arena,
+            15,
+            80,
+            -WIDTH / 2.f + 20.f,
+            3.f);
+
+    private final Pad opponent = new Pad(
+            arena,
+            15,
+            80,
+            WIDTH / 2.f - 20.f,
+            3.f);
 
     private final BouncingBall ball = new BouncingBall(
         arena,
         new PVector(200, 200),
         new PVector(BALL_SPEED, BALL_SPEED),
-        20);
+        20,
+            player,
+            opponent);
 
     @Override
     public void settings() {
@@ -44,8 +61,16 @@ public class App extends PApplet {
         translate(offset_center_x, offset_center_y);
 
         if(keyPressed) {
-            stop();
-            exit();
+            if (key == PConstants.CODED) {
+                if (keyCode == PConstants.UP) {
+                    player.moveUp();
+                } else if (keyCode == PConstants.DOWN) {
+                    player.moveDown();
+                }
+            } else {
+                stop();
+                exit();
+            }
         }
 
         final float delta = clock.delta();
@@ -57,6 +82,8 @@ public class App extends PApplet {
         ball.update(delta);
         ball.draw(this);
         arena.draw(this);
+        player.draw(this);
+        opponent.draw(this);
 
         popMatrix();
     }
