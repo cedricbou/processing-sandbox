@@ -1,11 +1,13 @@
 package fr.leroymerlin.learn.common.collision.maths.gjk;
 
+import net.jcip.annotations.NotThreadSafe;
 import processing.core.PVector;
 
 /**
  * A reusable simplex for the GJK algorithm (not thread safe).
  *
  */
+@NotThreadSafe
 public class GjkSimplex123 {
 
     private final PVector[] points = new PVector[3];

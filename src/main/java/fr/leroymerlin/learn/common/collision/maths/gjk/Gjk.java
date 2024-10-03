@@ -1,10 +1,12 @@
 package fr.leroymerlin.learn.common.collision.maths.gjk;
 
+import net.jcip.annotations.NotThreadSafe;
 import processing.core.PVector;
 
 /**
  * Implementation of the GJK algorithm (not thread safe).
  */
+@NotThreadSafe
 public class Gjk {
     private final GjkSimplex123 preAllocatedSimplex = new GjkSimplex123();
     private final PVector preAllocatedDirection = new PVector();
