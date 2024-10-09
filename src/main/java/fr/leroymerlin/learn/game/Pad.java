@@ -2,18 +2,19 @@ package fr.leroymerlin.learn.game;
 
 import fr.leroymerlin.learn.common.Actor;
 import fr.leroymerlin.learn.common.Drawable;
-import fr.leroymerlin.learn.common.collision.Collider;
-import fr.leroymerlin.learn.common.collision.boxes.RectBox;
+import fr.leroymerlin.learn.common.collision.GjkCollider;
+import fr.leroymerlin.learn.common.collision.maths.gjk.GjkShape;
+import fr.leroymerlin.learn.common.collision.maths.gjk.shapes.Ngon;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
 
-public class Pad implements Actor, Drawable, Collider<RectBox> {
+public class Pad extends GjkCollider implements Actor, Drawable {
 
     private final Arena arena;
 
     private final PVector position;
-    private final RectBox boundingBox;
+    private final Ngon collisionBox;
 
     private final float speed;
 
@@ -26,23 +27,29 @@ public class Pad implements Actor, Drawable, Collider<RectBox> {
         this.width = width;
         this.height = height;
         this.speed = speed;
-        this.boundingBox = new RectBox(this.position, new PVector(width, height));
+        this.collisionBox = Ngon.rectangle(this.position, width, height);
     }
 
     public void moveUp() {
         this.position.y -= this.speed;
+        this.collisionBox.setCenter(this.position.x, this.position.y);
 
         if(arena.collidesTopWall(this)) {
             this.position.y += this.speed;
+            this.collisionBox.setCenter(this.position.x, this.position.y);
+
         }
     }
 
     public void moveDown() {
         this.position.y += this.speed;
+        this.collisionBox.setCenter(this.position.x, this.position.y);
 
         if(arena.collidesBottomWall(this)) {
             this.position.y -= this.speed;
+            this.collisionBox.setCenter(this.position.x, this.position.y);
         }
+
     }
 
     @Override
@@ -53,16 +60,14 @@ public class Pad implements Actor, Drawable, Collider<RectBox> {
     @Override
     public void draw(PApplet P) {
         P.rectMode(PConstants.CENTER);
-        P.pushMatrix();
-        P.translate(position.x, position.y);
         P.colorMode(PConstants.HSB, 1024);
         P.fill(580, 500, 500);
-        P.rect(0.f, 0.f, this.width, this.height);
-        P.popMatrix();
+        P.rect(this.position.x, this.position.y, this.width, this.height);
+        P.fill(210, 500, 500);
     }
 
     @Override
-    public RectBox getBox() {
-        return this.boundingBox;
+    public GjkShape getCollisionShape() {
+        return collisionBox;
     }
 }

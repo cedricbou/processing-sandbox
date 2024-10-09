@@ -1,10 +1,9 @@
 package fr.leroymerlin.learn.game;
 
 import fr.leroymerlin.learn.common.Drawable;
-import fr.leroymerlin.learn.common.collision.Collider;
-import fr.leroymerlin.learn.common.collision.boxes.Box;
-import fr.leroymerlin.learn.common.collision.boxes.BoxMaths;
-import fr.leroymerlin.learn.common.collision.boxes.RectBox;
+import fr.leroymerlin.learn.common.collision.GjkCollider;
+import fr.leroymerlin.learn.common.collision.maths.gjk.GjkShape;
+import fr.leroymerlin.learn.common.collision.maths.gjk.shapes.Ngon;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
@@ -22,12 +21,12 @@ public class Arena implements Drawable {
     private final float width;
     private final float height;
     
-    private final RectBox topWall;
-    private final RectBox bottomWall;
-    private final RectBox leftWall;
-    private final RectBox rightWall;
+    private final Ngon topWall;
+    private final Ngon bottomWall;
+    private final Ngon leftWall;
+    private final Ngon rightWall;
 
-    private final RectBox[] walls;
+    private final Ngon[] walls;
 
     private int hue = 0;
 
@@ -42,31 +41,32 @@ public class Arena implements Drawable {
         final PVector leftWallCenter = new PVector(CENTER_POSITION.x - width / 2 + WALL_THICKNESS / 2, CENTER_POSITION.y);
         final PVector rightWallCenter = new PVector(CENTER_POSITION.x + width / 2 - WALL_THICKNESS / 2, CENTER_POSITION.y);
 
-        final PVector horizontalWallSize = new PVector(width, WALL_THICKNESS);
-        final PVector verticalWallSize = new PVector(WALL_THICKNESS, height);
+        this.topWall = Ngon.rectangle(topWallCenter, width, WALL_THICKNESS);
+        this.bottomWall = Ngon.rectangle(bottomWallCenter, width, WALL_THICKNESS);
+        this.leftWall = Ngon.rectangle(leftWallCenter, WALL_THICKNESS, height);
+        this.rightWall = Ngon.rectangle(rightWallCenter, WALL_THICKNESS, height);
 
-        this.topWall = new RectBox(topWallCenter, horizontalWallSize);
-        this.bottomWall = new RectBox(bottomWallCenter, horizontalWallSize);
-        this.leftWall = new RectBox(leftWallCenter, verticalWallSize);
-        this.rightWall = new RectBox(rightWallCenter, verticalWallSize);
-
-        this.walls = new RectBox[]{topWall, bottomWall, leftWall, rightWall};
+        this.walls = new Ngon[] {topWall, bottomWall, leftWall, rightWall};
     }
 
-    public boolean collidesTopWall(Collider<? extends Box> collider) {
-        return BoxMaths.intersect(collider.getBox(), topWall);
+    private boolean collidesWall(GjkCollider collider, GjkShape wall) {
+        return collider.getCollisionAlgorithm().intersect(collider.getCollisionShape(), wall);
     }
 
-    public boolean collidesBottomWall(Collider<? extends Box> collider) {
-        return BoxMaths.intersect(collider.getBox(), bottomWall);
+    public boolean collidesTopWall(GjkCollider collider) {
+        return this.collidesWall(collider, topWall);
     }
 
-    public boolean collidesLeftWall(Collider<? extends Box> collider) {
-        return BoxMaths.intersect(collider.getBox(), leftWall);
+    public boolean collidesBottomWall(GjkCollider collider) {
+        return this.collidesWall(collider, bottomWall);
     }
 
-    public boolean collidesRightWall(Collider<? extends Box> collider) {
-        return BoxMaths.intersect(collider.getBox(), rightWall);
+    public boolean collidesLeftWall(GjkCollider collider) {
+        return this.collidesWall(collider, leftWall);
+    }
+
+    public boolean collidesRightWall(GjkCollider collider) {
+        return this.collidesWall(collider, rightWall);
     }
 
     @Override
@@ -78,9 +78,9 @@ public class Arena implements Drawable {
     public void draw(final PApplet P) {
         P.colorMode(PConstants.HSB, 1024);
         P.fill(hue, 500, 500);
-        P.rectMode(PConstants.CENTER);
-        for(RectBox wall : walls) {
-            P.rect(wall.getCenter().x, wall.getCenter().y, wall.getSize().x, wall.getSize().y);
+        P.rectMode(PConstants.CORNERS);
+        for(Ngon wall : walls) {
+            P.rect(wall.viewPoints().get(0).x, wall.viewPoints().get(0).y, wall.viewPoints().get(2).x, wall.viewPoints().get(2).y);
         }
         hue += 1;
         hue %= 1024;

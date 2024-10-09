@@ -1,11 +1,12 @@
 package fr.leroymerlin.learn.common.collision.maths.gjk;
 
+import fr.leroymerlin.learn.common.collision.Shape;
 import processing.core.PVector;
 
 /**
  * Interface for a shape that can be used with the GJK algorithm.
  */
-public interface GjkShape {
+public interface GjkShape extends Shape {
 
     /**
      * Support function to return the furthest point of the shape in a given direction.
@@ -13,12 +14,12 @@ public interface GjkShape {
      * @param target the target vector to store the result
      * @return the target vector for chaining
      */
-    public PVector support(PVector direction, PVector target);
+    PVector support(PVector direction, PVector target);
 
     /**
      * Center point of the shape.
      * @param target the target point to store the result
      * @return the target point for chaining
      */
-    public PVector center(PVector target);
+    PVector center(PVector target);
 }

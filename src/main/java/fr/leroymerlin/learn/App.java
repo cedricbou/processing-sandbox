@@ -38,12 +38,12 @@ public class App extends PApplet {
             3.f);
 
     private final BouncingBall ball = new BouncingBall(
-        arena,
-        new PVector(200, 200),
-        new PVector(BALL_SPEED, BALL_SPEED),
-        20,
-            player,
-            opponent);
+            arena,
+            new PVector(200, 200),
+            new PVector(BALL_SPEED, BALL_SPEED),
+            20,
+                player,
+                opponent);
 
     @Override
     public void settings() {
